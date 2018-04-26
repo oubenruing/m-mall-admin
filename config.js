@@ -33,5 +33,7 @@ export default {
 	wechat: {
 		appid: 'wx4ec54c44008298ec', 
 		secret: '8295e6dd753aab17624e0bb0e1c4e98d', 
+		mch_id: ' ',
+		goodsclass: '公司-调味品',
 	},
 }
