@@ -2,10 +2,10 @@ export default {
 	secret: '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
 	mongo: {
 		development: {
-			connectionString: 'mongodb://127.0.0.1:27017/mall'
+			connectionString: 'mongodb://用户名:密码@127.0.0.1:27017/mall'
 		},
 		production: {
-			connectionString: 'mongodb://127.0.0.1:27017/mall'
+			connectionString: 'mongodb://用户名:密码@127.0.0.1:27017/mall'
 		}
 	},
 	redis: {
@@ -23,7 +23,7 @@ export default {
 	superAdmin: {
 		username: 'admin', 
 		password: '123456', 
-	},
+	},s
 	orderStatus: {
 		'submitted': '已提交', 
 		'canceled' : '已取消', 
@@ -31,9 +31,11 @@ export default {
 		'finished' : '已完成', 
 	},
 	wechat: {
-		appid: 'wx4ec54c44008298ec', 
-		secret: '8295e6dd753aab17624e0bb0e1c4e98d', 
-		mch_id: ' ',
+		appid: '',
+		secret: '',
+		mch_id: '',
 		goodsclass: '公司-调味品',
+        notifyurl:'http://',
+		mch_key:'',
 	},
 }

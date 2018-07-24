@@ -1,6 +1,8 @@
 import request from 'request'
 import proxy from '../proxy'
 import config from '../config'
+import crypto from 'crypto'
+const parseString = require('xml2js').parseString;
 
 class Ctrl{
 	constructor(app) {
@@ -45,8 +47,8 @@ class Ctrl{
             trade_type: 'JSAPI'
         };
         let str = this.raw(ret);
-        str = str + '&key='+key;
-        let md5Str = cryptoMO.createHash('md5').update(str).digest('hex');
+        str = str + '&key='+ config.wechat.mch_key;
+        let md5Str = crypto.createHash('md5').update(str).digest('hex');
         md5Str = md5Str.toUpperCase();
         return md5Str;
     };
@@ -66,22 +68,22 @@ class Ctrl{
         return str;
     };
 
-	paysignjs(appid, nonceStr, package, signType, timeStamp) {
+	paysignjs(appid, nonceStr, packages, signType, timeStamp) {
         const ret = {
             appId: appid,
             nonceStr: nonceStr,
-            package: package,
+            package: packages,
             signType: signType,
             timeStamp: timeStamp
         };
         let str = this.raw1(ret);
-        str = str + '&key='+key;
-        return cryptoMO.createHash('md5').update(str).digest('hex');
+        str = str + '&key='+ config.wechat.mch_key;
+        return crypto.createHash('md5').update(str).digest('hex');
     };
 
     raw1(args) {
         let keys = Object.keys(args);
-        keys = keys.sort()
+        keys = keys.sort();
         let newArgs = {};
         keys.forEach(function(key) {
             newArgs[key] = args[key];
@@ -99,8 +101,8 @@ class Ctrl{
         len = len || 32;
         const $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';    /****默认去掉了容易混淆的字符oOLl,9gq,Vv,Uu,I1****/
         const maxPos = $chars.length;
-        var pwd = '';
-        for (i = 0; i < len; i++) {
+        let pwd = '';
+        for (let i = 0; i < len; i++) {
             pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
         }
         return pwd;
@@ -346,7 +348,7 @@ class Ctrl{
             const openid = param.openid;
             const spbill_create_ip = req.ip.replace(/::ffff:/, ''); // 获取客户端ip
             const pay_body = config.wechat.goodsclass; // 商品描述
-            const notify_url = 'https://www.hgdqdev.cn/api/wxpay' // 支付成功的回调地址  可访问 不带参数
+            const notify_url = config.wechat.notifyurl; // 支付成功的回调地址  可访问 不带参数
             const nonce_str = this.randomString(); // 随机字符串
             const out_trade_no = doc._id; // 商户订单号
             const total_fee = Math.abs(doc.totalAmount*100); // 订单价格 单位是 分
@@ -380,7 +382,8 @@ class Ctrl{
             bodyData += '<sign>' + sign + '</sign>';
             bodyData += '</xml>';
             // 微信小程序统一下单接口
-            const urlStr = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
+            //const urlStr = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
+            const urlStr = 'https://api.mch.weixin.qq.com/sandboxnew/pay/unifiedorder';
             request({
                 url: urlStr,
                 method: 'POST',
@@ -404,7 +407,7 @@ class Ctrl{
                             returnValue.msg = result.xml.return_msg[0];
                             returnValue.status = '102';
                             //res.end(JSON.stringify(returnValue));
-                            res.tools.setJson(0, '统一下单失败', JSON.stringify(returnValue));
+                            res.tools.setJson(1, '统一下单失败', JSON.stringify(returnValue));
                         }
                     });
                 }
